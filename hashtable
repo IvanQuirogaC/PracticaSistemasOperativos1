@@ -1,0 +1,51 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdbool.h>
+#include<string.h>
+#include<ctype.h>
+
+#define HASH_SIZE 1000
+struct ListNode{
+	struct ListNode *next;
+	int data;
+	int hashCode;
+};
+
+int funHash(char* str){
+	int i;
+	int ans=0;
+	for(i=0;i<strlen(str);i++){
+		ans+=(int)str[i];	
+	}
+	return ans;
+}
+
+int setElementInHash(struct ListNode *hashAp, int data){
+	char valToHashFunc[80];
+	sprintf(valToHashFunc, "%i%i", data, data);
+	int hashVal = funHash(valToHashFunc);
+	struct ListNode *actual = &hashAp[hashVal % HASH_SIZE];
+	struct ListNode *last = NULL;
+	while(actual->next != NULL){
+		last = actual; 
+		actual = actual->next;		
+	}
+	actual->data = data;
+	actual->hashCode = hashVal;
+	actual->next = NULL;
+	if(last != NULL){
+		last->next = actual;
+	}
+	return hashVal;
+}
+
+int getElementInHash(struct ListNode *hashAp, int pos){
+	struct ListNode actual = hashAp[pos % HASH_SIZE];
+	while(actual.next != NULL && actual.data != pos){
+		actual = *actual.next;
+	}
+	if(actual.hashCode != pos){ //NO encontro la posocion
+		return -1;
+	}
+	return actual.data;	
+}
