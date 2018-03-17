@@ -1,0 +1,79 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdbool.h>
+struct datos {
+        int edad;
+        char genero;
+        float estatura;
+        char nombre[32];
+};
+
+void recibir(void *ap){
+        struct datos *dato;
+        dato=ap;
+	printf("Edad: ");	
+        scanf("%i", &dato->edad);
+        printf("Genero: ");	
+        scanf(" %c", &dato->genero);
+        printf("Estatura: ");	
+        scanf("%f", &dato->estatura);
+        printf("Nombre: ");	
+        scanf("%s", dato->nombre);
+}
+
+void ingresar(){
+	
+	struct datos *persona;
+        persona = malloc(sizeof(struct datos));
+        recibir(persona);
+        printf("Edad: %i \n", persona->edad);
+        printf("Genero: %c \n", persona->genero);
+        printf("Estatura: %f \n", persona->estatura);
+        printf("Nombre %s \n", persona->nombre);
+
+	FILE *ach;
+	ach = fopen("datos.dat", "a+");
+	fwrite(persona, sizeof(struct datos),1, ach);
+	fclose(ach);
+	free(persona);
+}
+void leer(){
+	FILE *ach;
+	ach = fopen("datos.dat", "r");
+	struct datos *persona;
+        persona = malloc(sizeof(struct datos));	
+	while(fread(persona, sizeof(struct datos),1,ach)){
+		printf("Edad: %i \n", persona->edad);
+		printf("Genero: %c \n", persona->genero);
+		printf("Estatura: %f \n", persona->estatura);
+		printf("Nombre %s \n", persona->nombre);
+	}
+	fclose(ach);
+	free(persona);
+}
+int main(){
+	bool flag=true;	
+	int menu = 0;
+
+	while(flag){
+	
+	printf("1.Ingresar/Guardar \n2.Buscar \n3.Salir\n");
+	scanf("%i",&menu);
+	switch(menu){
+		case 1:
+		ingresar();
+		break;
+		case 2:	
+		leer();
+		break;
+		case 3:
+		flag=false;
+		default:
+	      	printf("No se reconoce la entrada\n");       
+	}
+
+
+
+	}
+	return 0;
+}
